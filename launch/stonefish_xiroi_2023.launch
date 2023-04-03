@@ -14,7 +14,7 @@
     <arg name="graphics_quality" default="low"/>
 
     <!-- ROBOT -->
-    <include file="$(find cola2_xiroi)/launch/robot.launch">
+    <include file="$(find stonefish_ros)/launch/xiroi_sim.launch">
         <arg name="place" value="$(arg place)"/>
         <arg name="robot_name" value="$(arg robot_name)"/>
         <arg name="enableSafety" value="$(arg enableSafety)"/>
@@ -42,7 +42,6 @@
         <node name="sim_actuators" pkg="cola2_xiroi" type="sim_actuators.py" output="screen">
             <remap from="/control/thrusters_data" to="controller/thruster_setpoints"/>
             <remap from="/control/sim_thrusters_data" to="controller/thruster_rpm"/>
-            <!-- ggdsjuu -->
         </node>
     </group>
 

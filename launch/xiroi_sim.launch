@@ -1,0 +1,92 @@
+<launch>
+    <!-- Params -->
+    <arg name="place" default="illetes.yaml"/>
+    <arg name="robot_name" default="xiroi"/>
+    <arg name="environment" default="sea"/>
+
+    <!-- Flags -->
+    <arg name="sim" default="false"/>
+    <arg name="simGPS" default="false"/>
+
+    <!-- Core -->
+    <arg name="enableSafety" default="true"/>
+    <arg name="enableATX" default="true"/>
+    <arg name="enableThrusters" default="false"/>
+    <arg name="openLoopTeleoperation" default="false"/>
+    <arg name="AUV_tracking" default="false"/>
+
+
+    <!-- Payload -->
+    <arg name="enableBB2narrow" default="false"/>
+    <arg name="enableBB2wide" default="false"/>
+    <arg name="enableCH3" default="false"/>
+    <arg name="enableUSBL" default="false"/>
+    <arg name="enableMagnetometer" default="false"/>
+
+    <!-- Interfaces -->
+    <arg name="enableIqua" default="true"/>
+    <arg name="enableMultimaster" default="false"/>
+    <arg name="enableWirelessLinkMonitoring" default="false"/>
+    <arg name="enableAcousticLinkMonitoring" default="false"/>
+    <arg name="enableTopicLogger" default="false"/>
+    <arg name="host_name" default="192.168.1.230"/>
+    
+
+    <group ns="$(arg robot_name)">
+        <!-- Load general configs-->
+        <include file="$(find cola2_xiroi)/launch/modules/configs.launch">
+            <arg name="place" value="$(arg place)"/>
+            <arg name="robot_name" value="$(arg robot_name)"/>
+        </include>
+
+        <!-- Load core -->
+        <include file="$(find cola2_xiroi)/launch/modules/core.launch">
+            <arg name="place" value="$(arg place)"/>
+            <arg name="robot_name" value="$(arg robot_name)"/>
+            <arg name="sim" value="$(arg sim)"/>
+            <arg name="enableATX" value="$(arg enableATX)"/>
+            <arg name="simGPS" value="$(arg simGPS)"/>
+            <arg name="enableSafety" value="$(arg enableSafety)"/>
+            <arg name="AUV_tracking" value="$(arg AUV_tracking)"/>
+            <arg name="openLoopTeleoperation" value="$(arg openLoopTeleoperation)"/>
+            <arg name="enableThrusters" value="$(arg enableThrusters)"/>
+        </include>
+
+        <!-- Load payload -->
+        <include file="$(find cola2_xiroi)/launch/modules/payload.launch">
+            <arg name="robot_name" value="$(arg robot_name)"/>
+            <arg name="enableBB2narrow" value="$(arg enableBB2narrow)"/>
+            <arg name="enableBB2wide" value="$(arg enableBB2wide)"/>
+            <arg name="enableUSBL" value="$(arg enableUSBL)"/>
+            <arg name="enableCH3" value="$(arg enableCH3)"/>
+            <arg name="environment" value="$(arg environment)"/>
+        </include>
+
+        <!-- Load interfaces -->
+        <include file="$(find cola2_xiroi)/launch/modules/interfaces.launch">
+            <arg name="enableIqua" value="$(arg enableIqua)"/>
+            <arg name="enableMultimaster" value="$(arg enableMultimaster)"/>
+        </include>
+        
+        <group if="$(arg enableWirelessLinkMonitoring)">
+            <!-- Load Wireless Monitoring -->
+            <include file="$(find link_quality)/launch/wireless_monitoring.launch">
+                <arg name="host_name" value="$(arg host_name)"/>
+                <arg name="enableWirelessLinkMonitoring" value="$(arg enableWirelessLinkMonitoring)"/>
+            </include>
+        </group>
+        
+        <group if="$(arg enableWirelessLinkMonitoring)">
+            <!-- Load Acoustic Monitoring -->
+            <include file="$(find link_quality)/launch/acoustic_monitoring.launch">
+                <arg name="enableAcousticLinkMonitoring" value="$(arg enableAcousticLinkMonitoring)"/>
+            </include>
+        </group>
+
+        <!-- Topic Logger -->
+        <group if="$(arg enableTopicLogger)">
+            <rosparam command="load" file="$(find cola2_xiroi)/config/topic_logger/topic_logger_xiroi.yaml"/>
+            <node name="topic_logger" pkg="cola2_xiroi" type="topic_logger.py" respawn="true" output="screen"/>
+        </group>
+    </group>
+</launch>
