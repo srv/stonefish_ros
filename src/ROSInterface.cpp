@@ -150,21 +150,30 @@ void ROSInterface::PublishIMU(ros::Publisher& pub, IMU* imu)
     msg.orientation.y = quat.y();
     msg.orientation.z = quat.z();
     msg.orientation.w = quat.w();
-    msg.orientation_covariance[0] = angleStdDev.getX() * angleStdDev.getX();
-    msg.orientation_covariance[4] = angleStdDev.getY() * angleStdDev.getY();
-    msg.orientation_covariance[8] = angleStdDev.getZ() * angleStdDev.getZ();
+    // msg.orientation_covariance[0] = angleStdDev.getX() * angleStdDev.getX();
+    // msg.orientation_covariance[4] = angleStdDev.getY() * angleStdDev.getY();
+    // msg.orientation_covariance[8] = angleStdDev.getZ() * angleStdDev.getZ();
+    msg.orientation_covariance[0] = 0.1;
+    msg.orientation_covariance[4] = 0.1;
+    msg.orientation_covariance[8] = 0.1;
     msg.angular_velocity.x = s.getValue(3);
     msg.angular_velocity.y = s.getValue(4);
     msg.angular_velocity.z = s.getValue(5);
-    msg.angular_velocity_covariance[0] = avelocityStdDev.getX() * avelocityStdDev.getX();
-    msg.angular_velocity_covariance[4] = avelocityStdDev.getY() * avelocityStdDev.getY();
-    msg.angular_velocity_covariance[8] = avelocityStdDev.getZ() * avelocityStdDev.getZ();
+    // msg.angular_velocity_covariance[0] = avelocityStdDev.getX() * avelocityStdDev.getX();
+    // msg.angular_velocity_covariance[4] = avelocityStdDev.getY() * avelocityStdDev.getY();
+    // msg.angular_velocity_covariance[8] = avelocityStdDev.getZ() * avelocityStdDev.getZ();
+    msg.angular_velocity_covariance[0] = 0.0001;
+    msg.angular_velocity_covariance[4] = 0.0001;
+    msg.angular_velocity_covariance[8] = 0.0002;
     msg.linear_acceleration.x = s.getValue(6);
     msg.linear_acceleration.y = s.getValue(7);
     msg.linear_acceleration.z = s.getValue(8);
-    msg.linear_acceleration_covariance[0] = accStdDev.getX() * accStdDev.getX();
-    msg.linear_acceleration_covariance[4] = accStdDev.getY() * accStdDev.getY();
-    msg.linear_acceleration_covariance[8] = accStdDev.getZ() * accStdDev.getZ();
+    // msg.linear_acceleration_covariance[0] = accStdDev.getX() * accStdDev.getX();
+    // msg.linear_acceleration_covariance[4] = accStdDev.getY() * accStdDev.getY();
+    // msg.linear_acceleration_covariance[8] = accStdDev.getZ() * accStdDev.getZ();
+    msg.linear_acceleration_covariance[0] = 0.0;
+    msg.linear_acceleration_covariance[4] = 0.0;
+    msg.linear_acceleration_covariance[8] = 0.0;
     pub.publish(msg);
 }
 
@@ -228,7 +237,8 @@ void ROSInterface::PublishGPS(ros::Publisher& pub, GPS* gps)
 
     sensor_msgs::NavSatFix msg;
     msg.header.stamp = ros::Time::now();
-    msg.header.frame_id = gps->getName();
+    // msg.header.frame_id = gps->getName();
+    msg.header.frame_id = "world_ned";
     msg.status.service = msg.status.SERVICE_GPS;
 
     if(s.getValue(0) > Scalar(90) && s.getValue(1) > Scalar(180)) //Underwater
@@ -247,7 +257,9 @@ void ROSInterface::PublishGPS(ros::Publisher& pub, GPS* gps)
     }
 
     msg.position_covariance[0] = msg.position_covariance[4] = gps->getNoise() * gps->getNoise();
-    msg.position_covariance[8] = 1.0;
+    // msg.position_covariance[0] = msg.position_covariance[4] = 0.5;
+    // msg.position_covariance[8] = 1.0;
+    msg.position_covariance[8] = 0.5;
     msg.position_covariance_type = msg.COVARIANCE_TYPE_DIAGONAL_KNOWN;
     pub.publish(msg);
 }

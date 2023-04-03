@@ -67,6 +67,8 @@
 #include <stonefish_ros/ThrusterState.h>
 #include <stonefish_ros/Int32Stamped.h>
 #include <stonefish_ros/BeaconInfo.h>
+#include <cola2_msgs/Setpoints.h>
+#include <cola2_msgs/DVL.h>
 
 #include <ros/package.h>
 
@@ -285,13 +287,13 @@ bool ROSScenarioParser::ParseRobot(XMLElement* element)
         const char* topicSrv = nullptr;
 
         if(nThrusters > 0 && item->QueryStringAttribute("thrusters", &topicThrust) == XML_SUCCESS)
-            subs[robot->getName() + "/thrusters"] = nh.subscribe<std_msgs::Float64MultiArray>(std::string(topicThrust), 10, ThrustersCallback(sim, rosRobot));
+            subs[robot->getName() + "/thrusters"] = nh.subscribe<cola2_msgs::Setpoints>(std::string(topicThrust), 10, ThrustersCallback(sim, rosRobot));
 
         if(nPropellers > 0 && item->QueryStringAttribute("propellers", &topicProp) == XML_SUCCESS)
-            subs[robot->getName() + "/propellers"] = nh.subscribe<std_msgs::Float64MultiArray>(std::string(topicProp), 10, PropellersCallback(sim, rosRobot));
+            subs[robot->getName() + "/propellers"] = nh.subscribe<cola2_msgs::Setpoints>(std::string(topicProp), 10, PropellersCallback(sim, rosRobot));
 
         if(nRudders > 0 && item->QueryStringAttribute("rudders", &topicRudder) == XML_SUCCESS)
-            subs[robot->getName() + "/rudders"] = nh.subscribe<std_msgs::Float64MultiArray>(std::string(topicRudder), 10, RuddersCallback(sim, rosRobot));
+            subs[robot->getName() + "/rudders"] = nh.subscribe<cola2_msgs::Setpoints>(std::string(topicRudder), 10, RuddersCallback(sim, rosRobot));
 
         if(nServos > 0 && item->QueryStringAttribute("servos", &topicSrv) == XML_SUCCESS)
         {
@@ -596,7 +598,7 @@ Sensor* ROSScenarioParser::ParseSensor(XMLElement* element, const std::string& n
 
                     case ScalarSensorType::DVL:
                     {
-                        pubs[sensorName] = nh.advertise<stonefish_ros::DVL>(topicStr, queueSize);
+                        pubs[sensorName] = nh.advertise<cola2_msgs::DVL>(topicStr, queueSize);
 
                         //Second topic with altitude
                         const char* altTopic = nullptr;
@@ -616,19 +618,19 @@ Sensor* ROSScenarioParser::ParseSensor(XMLElement* element, const std::string& n
                         pubs[sensorName] = nh.advertise<sensor_msgs::FluidPressure>(topicStr, queueSize);
                         break;
 
-                    case ScalarSensorType::INS:
-                    {
-                        pubs[sensorName] = nh.advertise<stonefish_ros::INS>(topicStr, queueSize);
+                    // case ScalarSensorType::INS:
+                    // {
+                    //     pubs[sensorName] = nh.advertise<stonefish_ros::INS>(topicStr, queueSize);
 
-                        //Second topic with odometry
-                        const char* odomTopic = nullptr;
-                        if(item->QueryStringAttribute("odometry_topic", &odomTopic) == XML_SUCCESS)
-                        {
-                            std::string odomTopicStr = std::string(odomTopic);
-                            pubs[sensorName + "/odometry"] = nh.advertise<nav_msgs::Odometry>(odomTopicStr, queueSize);
-                        }
-                    }
-                        break;
+                    //     //Second topic with odometry
+                    //     const char* odomTopic = nullptr;
+                    //     if(item->QueryStringAttribute("odometry_topic", &odomTopic) == XML_SUCCESS)
+                    //     {
+                    //         std::string odomTopicStr = std::string(odomTopic);
+                    //         pubs[sensorName + "/odometry"] = nh.advertise<nav_msgs::Odometry>(odomTopicStr, queueSize);
+                    //     }
+                    // }
+                    //     break;
 
                     case ScalarSensorType::ODOM:
                         pubs[sensorName] = nh.advertise<nav_msgs::Odometry>(topicStr, queueSize);

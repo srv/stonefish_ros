@@ -46,6 +46,7 @@
 #include <stonefish_ros/SonarSettings2.h>
 #include <image_transport/image_transport.h>
 #include "stonefish_ros/ROSControlInterface.h"
+#include <cola2_msgs/Setpoints.h>
 
 namespace sf
 {
@@ -154,7 +155,7 @@ namespace sf
 	{
 	public:
 		ThrustersCallback(ROSSimulationManager* sm, ROSRobot* robot);
-		void operator()(const std_msgs::Float64MultiArrayConstPtr& msg);
+		void operator()(const cola2_msgs::SetpointsConstPtr& msg);
 
 	private:
 		ROSSimulationManager* sm;
@@ -165,7 +166,7 @@ namespace sf
 	{
 	public:
 		PropellersCallback(ROSSimulationManager* sm, ROSRobot* robot);
-		void operator()(const std_msgs::Float64MultiArrayConstPtr& msg);
+		void operator()(const cola2_msgs::SetpointsConstPtr& msg);
 
 	private:
 		ROSSimulationManager* sm;
@@ -176,7 +177,7 @@ namespace sf
 	{
 	public:
 		RuddersCallback(ROSSimulationManager* sm, ROSRobot* robot);
-		void operator()(const std_msgs::Float64MultiArrayConstPtr& msg);
+		void operator()(const cola2_msgs::SetpointsConstPtr& msg);
 
 	private:
 		ROSSimulationManager* sm;

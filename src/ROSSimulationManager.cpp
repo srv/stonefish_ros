@@ -618,48 +618,48 @@ ThrustersCallback::ThrustersCallback(ROSSimulationManager* sm, ROSRobot* robot) 
 {
 }
 
-void ThrustersCallback::operator()(const std_msgs::Float64MultiArrayConstPtr& msg)
+void ThrustersCallback::operator()(const cola2_msgs::SetpointsConstPtr& msg)
 {
-    if(msg->data.size() != robot->thrusterSetpoints.size())
+    if(msg->setpoints.size() != robot->thrusterSetpoints.size())
     {
         ROS_ERROR_STREAM("Wrong number of thruster setpoints for robot: " << robot->robot->getName());
         return;
     }
 
     for(size_t i=0; i<robot->thrusterSetpoints.size(); ++i)
-        robot->thrusterSetpoints[i] = msg->data[i];
+        robot->thrusterSetpoints[i] = msg->setpoints[i];
 }
 
 PropellersCallback::PropellersCallback(ROSSimulationManager* sm, ROSRobot* robot) : sm(sm), robot(robot)
 {
 }
 
-void PropellersCallback::operator()(const std_msgs::Float64MultiArrayConstPtr& msg)
+void PropellersCallback::operator()(const cola2_msgs::SetpointsConstPtr& msg)
 {
-    if(msg->data.size() != robot->propellerSetpoints.size())
+    if(msg->setpoints.size() != robot->propellerSetpoints.size())
     {
         ROS_ERROR_STREAM("Wrong number of propeller setpoints for robot: " << robot->robot->getName());
         return;
     }
 
     for(size_t i=0; i<robot->propellerSetpoints.size(); ++i)
-        robot->propellerSetpoints[i] = msg->data[i];
+        robot->propellerSetpoints[i] = msg->setpoints[i];
 }
 
 RuddersCallback::RuddersCallback(ROSSimulationManager* sm, ROSRobot* robot) : sm(sm), robot(robot)
 {
 }
 
-void RuddersCallback::operator()(const std_msgs::Float64MultiArrayConstPtr& msg)
+void RuddersCallback::operator()(const cola2_msgs::SetpointsConstPtr& msg)
 {
-    if(msg->data.size() != robot->rudderSetpoints.size())
+    if(msg->setpoints.size() != robot->rudderSetpoints.size())
     {
         ROS_ERROR_STREAM("Wrong number of rudder setpoints for robot: " << robot->robot->getName());
         return;
     }
 
     for(size_t i=0; i<robot->rudderSetpoints.size(); ++i)
-        robot->rudderSetpoints[i] = msg->data[i];
+        robot->rudderSetpoints[i] = msg->setpoints[i];
 }
 
 ServosCallback::ServosCallback(ROSSimulationManager* sm, ROSRobot* robot) : sm(sm), robot(robot)
