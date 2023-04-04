@@ -1,57 +1,6 @@
 <?xml version="1.0"?>
 <scenario>
-	<environment>
-		<ned latitude="39.533687" longitude="2.590453"/>
-		<sun azimuth="20.0" elevation="50.0"/>
-		<ocean enabled = "true">
-			<water density="1031.0" jerlov="0.15"/>
-		</ocean>
-	</environment>
-
-	<materials>
-		<material name="Neutral" density="1000.0" restitution="0.5"/>
-		<material name="Rock" density="3000.0" restitution="0.8"/>
-		<material name="Fiberglass" density="1500.0" restitution="0.3"/>
-		<material name="Aluminium" density="2710.0" restitution="0.7"/>
-		<friction_table>
-			<friction material1="Neutral" material2="Neutral" static="0.5" dynamic="0.2"/>
-			<friction material1="Neutral" material2="Rock" static="0.2" dynamic="0.1"/>
-			<friction material1="Neutral" material2="Fiberglass" static="0.5" dynamic="0.2"/>
-			<friction material1="Neutral" material2="Aluminium" static="0.5" dynamic="0.2"/>
-			<friction material1="Rock" material2="Rock" static="0.9" dynamic="0.7"/>
-			<friction material1="Rock" material2="Fiberglass" static="0.6" dynamic="0.4"/>
-			<friction material1="Rock" material2="Aluminium" static="0.6" dynamic="0.3"/>
-			<friction material1="Fiberglass" material2="Fiberglass" static="0.5" dynamic="0.2"/>
-			<friction material1="Fiberglass" material2="Aluminium" static="0.5" dynamic="0.2"/>
-			<friction material1="Aluminium" material2="Aluminium" static="0.8" dynamic="0.5"/>
-		</friction_table>
-	</materials>
-
-	<looks>
-		<look name="white" gray="1.0" roughness="0.2"/>
-		<look name="black" gray="0.05" roughness="0.2"/>
-		<look name="hull" gray="1.0" roughness="0.3" texture="turbot/hull_tex.png"/>
-		<look name="seabed" gray="0.05" roughness="0.2" texture="terrain/illetes_sq_texture_rot.jpg"/>
-		<look name="seabed2" rgb="0.7 0.7 0.5" roughness="0.9"/>
-		<look name="grey" gray="0.5" roughness="0.5" metalness="0.8"/>
-	</looks>
-
-	<static name="Bottom" type="plane">
-		<material name="Rock"/>
-		<look name="seabed2"/>
-		<dimensions scalex="1" scaley="1"/>
-		<world_transform rpy="0.0 0.0 0.0" xyz="0.0 0.0 3.6"/>
-	</static>
-
-	<static name="Terrain" type="terrain"> 
-		<material name="Rock"/>
-		<look name="seabed"/>
-		<height_map filename="terrain/illetes_sq_bw.png"/>
-		<dimensions scalex="0.02" scaley="0.02" height="0"/>
-		<world_transform rpy="0.0 0.0 0.0" xyz="0.0 0.0 4.5"/>
-	</static>
-
-	<robot name="xiroi" fixed="false" self_collisions="false">
+	<robot name="turbot2" fixed="false" self_collisions="false">
 		<base_link name="Vehicle" type="compound" physics="submerged">
 			<external_part name="Hull" type="model" physics="submerged" buoyant="false">
 				<physical>
@@ -164,14 +113,14 @@
 		<sensor name="dynamics" type="odometry" rate="30.0">
 			<link name="Vehicle"/>
 			<origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
-			<ros_publisher topic="/xiroi/dynamics/odometry"/>
+			<ros_publisher topic="/turbot2/dynamics/odometry"/>
 		</sensor>
 
-		<!-- <sensor name="pressure" type="pressure" rate="5.0">
+		<sensor name="pressure" type="pressure" rate="5.0">
 			<link name="Vehicle"/>
 			<origin rpy="0.0 0.0 0.0" xyz="0.387 0.0 -0.033"/>
 			<noise pressure="100.0"/>
-			<ros_publisher topic="/turbot/adis_imu/fluid_pressure"/>
+			<ros_publisher topic="/turbot2/adis_imu/fluid_pressure"/>
 		</sensor>
 
 		<sensor name="dvl" type="dvl" rate="5.0">
@@ -180,31 +129,31 @@
 			<specs beam_angle="30.0"/>
 			<range velocity="9.0 9.0 9.0" altitude_min="0.5" altitude_max="81.0"/>
 			<noise velocity="0.0015" altitude="0.001"/>
-			<ros_publisher topic="/turbot/teledyne_explorer_dvl/dvl" altitude_topic="/turbot/navigator/altitude_raw"/>
-		</sensor> -->
+			<ros_publisher topic="/turbot2/teledyne_explorer_dvl/dvl" altitude_topic="/turbot/navigator/altitude_raw"/>
+		</sensor>
 
 		<sensor name="imu_filter" type="imu" rate="20.0">
 			<link name="Vehicle"/>
 			<origin rpy="0.0 0.0 0.0" xyz="0.36377 -0.02093 -0.0849"/>
 			<noise angle="0.000001745" angular_velocity="0.00001745"/>
-			<ros_publisher topic="/xiroi/sensors/imu_raw"/>
+			<ros_publisher topic="/turbot2/navigator/imu_raw"/>
 		</sensor>
 
-		<sensor name="gps" type="gps" rate="30.0">
+		<sensor name="gps" type="gps" rate="1.0">
 			<link name="Vehicle"/>
 			<origin rpy="0.0 0.0 0.0" xyz="-0.39 0.0 -0.36"/>
-			<noise ned_position="0.1"/>
-			<ros_publisher topic="/xiroi/sensors/gps_raw"/>
+			<noise ned_position="0.5"/>
+			<ros_publisher topic="/turbot2/navigator/gps_raw"/>
 		</sensor>
 
-		<!-- <sensor name="stereo_down/left" type="camera" rate="2.0">
+		<sensor name="stereo_down/left" type="camera" rate="2.0">
 			<link name="Vehicle"/>
 			<origin rpy="0.0 0.0 1.571" xyz="0.4 -0.4 0.2"/>
 			<specs resolution_x="480" resolution_y="360" horizontal_fov="26.0"/>
-			<ros_publisher topic="/turbot/stereo_down/left"/>
-		</sensor> -->
+			<ros_publisher topic="/turbot2/stereo_down/left"/>
+		</sensor>
 
-		<!-- <actuator name="ThrusterHeave" type="thruster">
+		<actuator name="ThrusterHeave" type="thruster">
 			<link name="Vehicle"/>
 			<origin rpy="0.0 1.571 0.0" xyz="0.0 0.0 0.07"/>
 			<specs thrust_coeff="0.7" thrust_coeff_backward="0.5" torque_coeff="0.01" max_rpm="4000.0" inverted="true"/>
@@ -213,7 +162,7 @@
 				<material name="Neutral"/>
 				<look name="white"/>
 			</propeller>
-		</actuator> -->
+		</actuator>
 
 		<actuator name="ThrusterSurgeStarboard" type="thruster">
 			<link name="Vehicle"/>
@@ -238,6 +187,6 @@
 		</actuator>
 
 		<world_transform rpy="0.0 0.0 0.0" xyz="0.0 0.0 1.0"/>
-		<ros_subscriber thrusters="/xiroi/controller/thruster_setpoints"/> 
+		<ros_subscriber thrusters="/turbot2/controller/thruster_setpoints"/> 
 	</robot>
 </scenario>

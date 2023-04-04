@@ -13,7 +13,7 @@
     <arg name="simulation_rate" default="25"/>
     <arg name="graphics_quality" default="low"/>
 
-    <!-- ROBOT -->
+    <!-- Surface robot -->
     <include file="$(find stonefish_ros)/launch/xiroi_sim.launch">
         <arg name="place" value="$(arg place)"/>
         <arg name="robot_name" value="$(arg robot_name)"/>
@@ -36,8 +36,8 @@
     <group ns="$(arg robot_name)">
         <rosparam command="load" file="$(find cola2_xiroi)/config/sim_sensors.yaml"/>
         <node name="sim_internal_sensors" pkg="cola2_xiroi" type="sim_internal_sensors.py" output="screen"/>
-        <!-- IMU/GPS -->
-        <node name="sim_nav_sensors" pkg="cola2_xiroi" type="sim_nav_sensors.py" output="screen"/>
+        <!-- GPS -->
+        <node name="sim_gps" pkg="stonefish_ros" type="sim_gps_xiroi.py" output="screen"/>
         <!-- Thrusters -->
         <node name="sim_actuators" pkg="cola2_xiroi" type="sim_actuators.py" output="screen">
             <remap from="/control/thrusters_data" to="controller/thruster_setpoints"/>
@@ -48,9 +48,9 @@
     <!-- Run Simulator -->
     <include file="$(find stonefish_ros)/launch/simulator.launch">
         <arg name="simulation_data" value="$(find stonefish_ros)/simulation"/>
-        <arg name="scenario_description" value="$(find stonefish_ros)/simulation/scenarios/xiroi.scn"/>
+        <arg name="scenario_description" value="$(find stonefish_ros)/simulation/scenarios/illetes_xiroi.scn"/>
         <arg name="simulation_rate" value="$(arg simulation_rate)"/>
-        <arg name="graphics_resolution" value="800 800"/>
+        <arg name="graphics_resolution" value="1200 800"/>
         <arg name="graphics_quality" value="$(arg graphics_quality)"/>
     </include>
 </launch>

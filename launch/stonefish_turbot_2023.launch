@@ -16,7 +16,7 @@
     <arg name="simulation_rate" default="25"/>
     <arg name="graphics_quality" default="low"/>
 
-    <!-- Robot -->
+    <!-- Submarine -->
     <include file="$(find cola2_turbot)/launch/robot.launch">
         <arg name="place" value="$(arg place)"/>
         <arg name="robot_name" value="$(arg robot_name)"/>
@@ -38,21 +38,13 @@
         <arg name="world2ned" value="true"/>
     </include>
 
-    <!-- Groundstation -->
-    <include file="$(find cola2_turbot)/launch/groundstation.launch">
-        <arg name="robot_name" value="$(arg robot_name)"/>
-        <arg name="enableRviz" value="$(arg enableRviz)" />
-        <arg name="enableUSBL" value="false"/>
-        <arg name="place" default="illetes.yaml"/>
-    </include>
-
     <!-- Simulate sensors and actuators -->
     <group ns="$(arg robot_name)">
         <rosparam command="load" file="$(find cola2_turbot)/config/sim_internal_sensors.yaml"/>
         <node name="sim_internal_sensors" pkg="cola2_sim" type="sim_internal_sensors.py" output="screen"/>
     </group>
 
-    <!-- SOUND_SPEED_TEST -->
+    <!-- Sound speed test -->
     <node name="sound_speed_publisher" pkg="cola2_turbot" type="sound_speed_publisher.py" output="screen"/>
 
      <!-- Run Simulator -->
