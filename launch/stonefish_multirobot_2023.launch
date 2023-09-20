@@ -14,7 +14,7 @@
     <arg name="AUV_tracking" default="false"/>
     
     <!-- Interfaces -->
-    <arg name="enableIquaT1" default="false"/>
+    <arg name="enableIquaT1" default="true"/>
     <arg name="enableIquaT2" default="false"/>
     <arg name="enableIquaT3" default="false"/>
     <arg name="enableIquaX" default="true"/>
@@ -23,11 +23,15 @@
     <arg name="simulation_rate" default="25"/>
     <arg name="graphics_quality" default="low"/>
 
-    <!-- Submarine 1 -->
-    <group if="$(eval arg('robot_name') == 'turbot')">
+    <arg name="robot0_name" default="robot0"/>
+    <arg name="robot1_name" default="robot1"/>
+    <arg name="robot2_name" default="robot2"/>
+    <arg name="robot3_name" default="robot3"/>
+
+        <!-- Robot 0 -->
         <include file="$(find cola2_turbot)/launch/robot.launch">
             <arg name="place" value="$(arg place)"/>
-            <arg name="robot_name" value="$(arg robot_name)"/>
+            <arg name="robot_name" value="$(arg robot0_name)"/>
             <arg name="sim" value="true"/>
             <arg name="simGPS" value="false"/>
             <arg name="enableComputerLogger" default="false"/>
@@ -46,36 +50,27 @@
             <arg name="world2ned" value="true"/>
         </include>
 
-        <!-- Simulate internal sensors -->
-        <group ns="$(arg robot_name)">
+        <group ns="$(arg robot0_name)">
+            <!-- Simulate internal sensors -->
             <!-- Internal Sensors -->
             <rosparam command="load" file="$(find cola2_turbot)/config/sim_internal_sensors.yaml"/>
             <node name="sim_internal_sensors" pkg="cola2_sim" type="sim_internal_sensors.py" output="screen"/>
+
+            <!-- Sound speed test -->
+            <node name="sound_speed_publisher" pkg="cola2_turbot" type="sound_speed_publisher.py" output="screen"/>
+
         </group>
 
-        <!-- Sound speed test -->
-        <node name="sound_speed_publisher" pkg="cola2_turbot" type="sound_speed_publisher.py" output="screen"/>
-
-        <!-- Run Simulator -->
-        <include file="$(find stonefish_ros)/launch/simulator.launch">
-            <arg name="simulation_data" value="$(find stonefish_ros)/simulation"/>
-            <arg name="scenario_description" value="$(find stonefish_ros)/simulation/scenarios/illetes_multirobot.scn"/>
-            <arg name="simulation_rate" value="$(arg simulation_rate)"/>
-            <arg name="graphics_resolution" value="1200 800"/>
-            <arg name="graphics_quality" value="$(arg graphics_quality)"/>
-        </include>
-    </group>
-
-    <!-- Submarine 2 -->
-    <group if="$(eval arg('robot_name') == 'turbot2')">
+        <!-- Robot 1 -->
+    
         <include file="$(find cola2_turbot)/launch/robot.launch">
             <arg name="place" value="$(arg place)"/>
-            <arg name="robot_name" value="$(arg robot_name)"/>
+            <arg name="robot_name" value="$(arg robot1_name)"/>
             <arg name="sim" value="true"/>
             <arg name="simGPS" value="false"/>
             <arg name="enableComputerLogger" default="false"/>
             <arg name="cola2_nav" value="$(arg cola2_nav)"/>
-            <arg name="enableSafety" value="true"/>
+            <arg name="enableSafety" value="false"/>
             <arg name="enableThrusters" value="false"/>
             <arg name="openLoopTeleoperation" value="false"/>
             <arg name="enableUSBLloc" value="$(arg enableUSBLloc)"/>
@@ -88,29 +83,26 @@
             <arg name="world2ned" value="true"/>
         </include>
 
-        <group ns="$(arg robot_name)">
+        <group ns="$(arg robot1_name)">
             <rosparam command="load" file="$(find cola2_turbot)/config/simulation/config/frames2.yaml"/>
             <rosparam command="load" file="$(find cola2_turbot)/config/simulation/config/robot_localization2.yaml" ns="navigator"/>
-        </group>
 
-        <!-- Simulate internal sensors -->
-        <group ns="$(arg robot_name)">
+            <!-- Simulate internal sensors -->
             <!-- Internal Sensors -->
             <rosparam command="load" file="$(find cola2_turbot)/config/sim_internal_sensors.yaml"/>
             <node name="sim_internal_sensors" pkg="cola2_sim" type="sim_internal_sensors.py" output="screen"/>
         </group>
-    </group>
 
-        <!-- Submarine 3 -->
-    <group if="$(eval arg('robot_name') == 'turbot3')">
+        <!-- Robot 2 -->
+   
         <include file="$(find cola2_turbot)/launch/robot.launch">
             <arg name="place" value="$(arg place)"/>
-            <arg name="robot_name" value="$(arg robot_name)"/>
+            <arg name="robot_name" value="$(arg robot2_name)"/>
             <arg name="sim" value="true"/>
             <arg name="simGPS" value="false"/>
             <arg name="enableComputerLogger" default="false"/>
             <arg name="cola2_nav" value="$(arg cola2_nav)"/>
-            <arg name="enableSafety" value="true"/>
+            <arg name="enableSafety" value="false"/>
             <arg name="enableThrusters" value="false"/>
             <arg name="openLoopTeleoperation" value="false"/>
             <arg name="enableUSBLloc" value="$(arg enableUSBLloc)"/>
@@ -123,30 +115,29 @@
             <arg name="world2ned" value="true"/>
         </include>
 
-        <group ns="$(arg robot_name)">
+        <group ns="$(arg robot2_name)">
             <rosparam command="load" file="$(find cola2_turbot)/config/simulation/config/frames2.yaml"/>
             <rosparam command="load" file="$(find cola2_turbot)/config/simulation/config/robot_localization2.yaml" ns="navigator"/>
-        </group>
 
         <!-- Simulate internal sensors -->
-        <group ns="$(arg robot_name)">
+
             <!-- Internal Sensors -->
             <rosparam command="load" file="$(find cola2_turbot)/config/sim_internal_sensors.yaml"/>
             <node name="sim_internal_sensors" pkg="cola2_sim" type="sim_internal_sensors.py" output="screen"/>
         </group>
-    </group>
 
-    <!-- Surface robot -->
-    <group if="$(eval arg('robot_name') == 'xiroi')">
+        <!-- Robot 3  ASV -->
+        <!-- Flags -->
+        <arg name="enableIqua" default="true"/>
+    
         <include file="$(find stonefish_ros)/launch/xiroi_sim.launch">
             <arg name="place" value="$(arg place)"/>
-            <arg name="robot_name" value="$(arg robot_name)"/>
-            <arg name="enableSafety" value="$(arg enableSafetyX)"/>
+            <arg name="robot_name" value="$(arg robot3_name)"/>
+            <arg name="enableSafety" value="$(arg enableSafety)"/>
             <arg name="openLoopTeleoperation" value="$(arg openLoopTeleoperation)"/>
-            <arg name="enableIqua" value="$(arg enableIquaX)"/>
+            <arg name="enableIqua" value="$(arg enableIqua)"/>
             <arg name="sim" value="true"/>
             <arg name="enableWirelessLinkMonitoring" value="false"/>
-            <arg name="AUV_tracking" value="$(arg AUV_tracking)"/>
             <arg name="enableThrusters" value="false"/>
             <arg name="enableATX" default="false"/>
             <arg name="enableBB2wide" default="false"/>
@@ -157,7 +148,7 @@
         </include>
 
         <!-- Simulate internal sensors -->
-        <group ns="$(arg robot_name)">
+        <group ns="$(arg robot3_name)">
             <rosparam command="load" file="$(find cola2_xiroi)/config/sim_sensors.yaml"/>
             <node name="sim_internal_sensors" pkg="cola2_xiroi" type="sim_internal_sensors.py" output="screen"/>
             <!-- GPS -->
@@ -168,5 +159,15 @@
                 <remap from="/control/sim_thrusters_data" to="controller/thruster_rpm"/>
             </node>
         </group>
-    </group>
+
+        <!-- Run Simulator -->
+        <include file="$(find stonefish_ros)/launch/simulator.launch">
+            <arg name="simulation_data" value="$(find stonefish_ros)/simulation"/>
+            <arg name="scenario_description" value="$(find stonefish_ros)/simulation/scenarios/illetes_multirobot.scn"/>
+            <arg name="simulation_rate" value="$(arg simulation_rate)"/>
+            <arg name="graphics_resolution" value="1200 800"/>
+            <arg name="graphics_quality" value="$(arg graphics_quality)"/>
+        </include>
+  
+    
 </launch>

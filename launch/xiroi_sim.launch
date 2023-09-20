@@ -21,7 +21,7 @@
     <arg name="enableBB2wide" default="false"/>
     <arg name="enableCH3" default="false"/>
     <arg name="enableUSBL" default="false"/>
-    <arg name="enableMagnetometer" default="false"/>
+    <!-- <arg name="enableMagnetometer" default="false"/> -->
 
     <!-- Interfaces -->
     <arg name="enableIqua" default="true"/>
