@@ -241,13 +241,11 @@
 		<ros_subscriber thrusters="/turbot/controller/thruster_setpoints"/> 
 	</robot>
 
-	<!-- <include file="$(find stonefish_ros)/simulation/scenarios/turbot2.scn">
-        <arg name="position" value="-2.0 -2.0 1.0"/>
+	<include file="$(find stonefish_ros)/simulation/scenarios/turbot2.scn">
     </include>
 
     <include file="$(find stonefish_ros)/simulation/scenarios/turbot3.scn">
-        <arg name="position" value="-4.0 -4.0 1.0"/>
-    </include> -->
+    </include>
 
 	<include file="$(find stonefish_ros)/simulation/scenarios/xiroi.scn">
 	</include>

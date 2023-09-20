@@ -47,7 +47,7 @@
             <arg name="enableATX" value="$(arg enableATX)"/>
             <arg name="simGPS" value="$(arg simGPS)"/>
             <arg name="enableSafety" value="$(arg enableSafety)"/>
-            <arg name="AUV_tracking" value="$(arg AUV_tracking)"/>
+            <!-- <arg name="AUV_tracking" value="$(arg AUV_tracking)"/> -->
             <arg name="openLoopTeleoperation" value="$(arg openLoopTeleoperation)"/>
             <arg name="enableThrusters" value="$(arg enableThrusters)"/>
         </include>

@@ -9,7 +9,7 @@
     <arg name="openLoopTeleoperation" default="false"/>
     <arg name="enableIqua" default="true"/>
     <arg name="enableRviz" default="false"/>
-    <arg name="AUV_tracking" default="false"/>
+    <!-- <arg name="AUV_tracking" default="false"/> -->
     <arg name="simulation_rate" default="25"/>
     <arg name="graphics_quality" default="low"/>
 
@@ -22,7 +22,7 @@
         <arg name="enableIqua" value="$(arg enableIqua)"/>
         <arg name="sim" value="true"/>
         <arg name="enableWirelessLinkMonitoring" value="false"/>
-        <arg name="AUV_tracking" value="$(arg AUV_tracking)"/>
+        <!-- <arg name="AUV_tracking" value="$(arg AUV_tracking)"/> -->
         <arg name="enableThrusters" value="false"/>
         <arg name="enableATX" default="false"/>
         <arg name="enableBB2wide" default="false"/>
