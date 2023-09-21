@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <scenario>
-	<robot name="robot2" fixed="false" self_collisions="false">
+	<robot name="robot1" fixed="false" self_collisions="false">
 		<base_link name="Vehicle" type="compound" physics="submerged">
 			<external_part name="Hull" type="model" physics="submerged" buoyant="false">
 				<physical>
@@ -113,14 +113,14 @@
 		<sensor name="dynamics" type="odometry" rate="30.0">
 			<link name="Vehicle"/>
 			<origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
-			<ros_publisher topic="/robot2/dynamics/odometry"/>
+			<ros_publisher topic="/robot1/dynamics/odometry"/>
 		</sensor>
 
 		<sensor name="pressure" type="pressure" rate="5.0">
 			<link name="Vehicle"/>
 			<origin rpy="0.0 0.0 0.0" xyz="0.387 0.0 -0.033"/>
 			<noise pressure="100.0"/>
-			<ros_publisher topic="/robot2/adis_imu/fluid_pressure"/>
+			<ros_publisher topic="/robot1/adis_imu/fluid_pressure"/>
 		</sensor>
 
 		<sensor name="dvl" type="dvl" rate="5.0">
@@ -129,28 +129,28 @@
 			<specs beam_angle="30.0"/>
 			<range velocity="9.0 9.0 9.0" altitude_min="0.5" altitude_max="81.0"/>
 			<noise velocity="0.0015" altitude="0.001"/>
-			<ros_publisher topic="/robot2/teledyne_explorer_dvl/dvl" altitude_topic="/turbot/navigator/altitude_raw"/>
+			<ros_publisher topic="/robot1/teledyne_explorer_dvl/dvl" altitude_topic="/turbot/navigator/altitude_raw"/>
 		</sensor>
 
 		<sensor name="imu_filter" type="imu" rate="20.0">
 			<link name="Vehicle"/>
 			<origin rpy="0.0 0.0 0.0" xyz="0.36377 -0.02093 -0.0849"/>
 			<noise angle="0.000001745" angular_velocity="0.00001745"/>
-			<ros_publisher topic="/robot2/navigator/imu_raw"/>
+			<ros_publisher topic="/robot1/navigator/imu_raw"/>
 		</sensor>
 
 		<sensor name="gps" type="gps" rate="1.0">
 			<link name="Vehicle"/>
 			<origin rpy="0.0 0.0 0.0" xyz="-0.39 0.0 -0.36"/>
 			<noise ned_position="0.5"/>
-			<ros_publisher topic="/robot2/navigator/gps_raw"/>
+			<ros_publisher topic="/robot1/navigator/gps_raw"/>
 		</sensor>
 
 		<sensor name="stereo_down/left" type="camera" rate="2.0">
 			<link name="Vehicle"/>
 			<origin rpy="0.0 0.0 1.571" xyz="0.4 -0.4 0.2"/>
 			<specs resolution_x="480" resolution_y="360" horizontal_fov="26.0"/>
-			<ros_publisher topic="/robot2/stereo_down/left"/>
+			<ros_publisher topic="/robot1/stereo_down/left"/>
 		</sensor>
 
 		<actuator name="ThrusterHeave" type="thruster">
@@ -186,7 +186,7 @@
 			</propeller>
 		</actuator>
 
-		<world_transform rpy="0.0 0.0 0.0" xyz="6.0 6.0 0.0"/>
-		<ros_subscriber thrusters="/robot2/controller/thruster_setpoints"/> 
+		<world_transform rpy="0.0 0.0 0.0" xyz="1.0 1.0 0.0"/>
+		<ros_subscriber thrusters="/robot1/controller/thruster_setpoints"/> 
 	</robot>
 </scenario>

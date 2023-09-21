@@ -31,9 +31,9 @@
 		<look name="white" gray="1.0" roughness="0.2"/>
 		<look name="black" gray="0.05" roughness="0.2"/>
 		<look name="hull" gray="1.0" roughness="0.3" texture="turbot/hull_tex.png"/>
-		<look name="seabed" gray="0.05" roughness="0.2" texture="terrain/cabrera_s0_mosaic_març_2023.png"/>
+		<look name="seabed" gray="0.05" roughness="0.2" texture="terrain/cabrera_s0_mosaic(2)_març_2023.png"/>
 		<look name="seabed2" rgb="0.7 0.7 0.5" roughness="0.9"/>
-		<look name="seabed3" gray="0.05" roughness="0.2" texture="terrain/cabrera_s0_mosaic(2)_març_2023.png"/>
+		<look name="seabed3" gray="0.05" roughness="0.2" texture="terrain/cabrera_s0_mosaic_març_2023.png"/>
 		<look name="grey" gray="0.5" roughness="0.5" metalness="0.8"/>
 	</looks>
 
@@ -41,7 +41,7 @@
 		<material name="Rock"/>
 		<look name="seabed2"/>
 		<dimensions scalex="1" scaley="1"/>
-		<world_transform rpy="0.0 0.0 0.0" xyz="0.0 0.0 3.6"/>
+		<world_transform rpy="0.0 0.0 0.0" xyz="0.0 0.0 8.55"/>
 	</static>
 
 	<static name="Terrain" type="terrain"> 
@@ -49,7 +49,7 @@
 		<look name="seabed"/>
 		<height_map filename="terrain/illetes_sq_bw.png"/>
 		<dimensions scalex="0.02" scaley="0.02" height="0"/>
-		<world_transform rpy="0.0 0.0 0.0" xyz="0.0 0.0 3.5"/>
+		<world_transform rpy="0.0 0.0 0.0" xyz="0.0 0.0 8.5"/>
 	</static>
 
 	<static name="Terrain" type="terrain"> 
@@ -57,7 +57,7 @@
 		<look name="seabed3"/>
 		<height_map filename="terrain/illetes_sq_bw.png"/>
 		<dimensions scalex="0.02" scaley="0.02" height="0"/>
-		<world_transform rpy="0.0 0.0 0.0" xyz="50.0 0.0 3.5"/>
+		<world_transform rpy="0.0 0.0 0.0" xyz="49.0 -15.0 8.49"/>
 	</static>
 
 	<robot name="robot1" fixed="false" self_collisions="false">

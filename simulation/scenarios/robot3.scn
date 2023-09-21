@@ -186,7 +186,7 @@
 			</propeller>
 		</actuator>
 
-		<world_transform rpy="0.0 0.0 0.0" xyz="6.0 6.0 1.0"/>
+		<world_transform rpy="0.0 0.0 0.0" xyz="4.0 4.0 0.0"/>
 		<ros_subscriber thrusters="/robot3/controller/thruster_setpoints"/> 
 	</robot>
 </scenario>

@@ -84,9 +84,9 @@
         </group>
 
         <!-- Topic Logger -->
-        <group if="$(arg enableTopicLogger)">
+        <!-- <group if="$(arg enableTopicLogger)">
             <rosparam command="load" file="$(find cola2_xiroi)/config/topic_logger/topic_logger_xiroi.yaml"/>
             <node name="topic_logger" pkg="cola2_xiroi" type="topic_logger.py" respawn="true" output="screen"/>
-        </group>
+        </group> -->
     </group>
 </launch>

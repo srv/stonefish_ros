@@ -1,6 +1,6 @@
 <launch>
     <!-- Params -->
-    <arg name="place" default="illetes.yaml"/>
+    <arg name="place" default="andratx_exterior.yaml"/>
     <arg name="stereo" default="/stereo_down"/>
 
     <!-- Flags -->
@@ -8,7 +8,6 @@
     <arg name="enableNav" default="true"/>
     <arg name="enableUSBLloc" default="false"/>
     <arg name="enableSafety" default="false"/>
-    <arg name="enableSafetyX" default="false"/>
     <arg name="openLoopTeleoperation" default="false"/>
     <arg name="AUV_tracking" default="false"/>
     
@@ -27,12 +26,13 @@
     <arg name="robot1_name" default="robot1"/>
     <arg name="robot2_name" default="robot2"/>
     <arg name="robot3_name" default="robot3"/>
+    <arg name="robot4_name" default="robot4"/>
 
-    <!-- Robot0 (surface) -->
-    <include file="$(find stonefish_ros)/launch/xiroi_sim.launch">
+    <!-- ASV -->
+    <!-- <include file="$(find stonefish_ros)/launch/xiroi_sim.launch">
         <arg name="place" value="$(arg place)"/>
-        <arg name="robot_name" value="$(arg robot0_name)"/>
-        <arg name="enableSafety" value="$(arg enableSafetyX)"/>
+        <arg name="robot_name" value="$(arg robot4_name)"/>
+        <arg name="enableSafety" value="$(arg enableSafety)"/>
         <arg name="openLoopTeleoperation" value="$(arg openLoopTeleoperation)"/>
         <arg name="enableIqua" value="$(arg enableIquaX)"/>
         <arg name="sim" value="true"/>
@@ -45,25 +45,25 @@
         <arg name="enableUSBL" value="false"/>
         <arg name="enableCH3" value="false"/>
         <arg name="enableTopicLogger" value="false"/>
-    </include>
+    </include> -->
 
     <!-- Simulate internal sensors -->
-    <group ns="$(arg robot0_name)">
+    <!-- <group ns="$(arg robot4_name)">
         <rosparam command="load" file="$(find cola2_xiroi)/config/sim_sensors.yaml"/>
         <node name="sim_internal_sensors" pkg="cola2_xiroi" type="sim_internal_sensors.py" output="screen"/>
-        <!-- GPS -->
+
         <node name="sim_gps" pkg="stonefish_ros" type="sim_gps_xiroi.py" output="screen"/>
-        <!-- Thrusters -->
+
         <node name="sim_actuators" pkg="cola2_xiroi" type="sim_actuators.py" output="screen">
             <remap from="/control/thrusters_data" to="controller/thruster_setpoints"/>
             <remap from="/control/sim_thrusters_data" to="controller/thruster_rpm"/>
         </node>
-    </group>
+    </group> -->
 
-    <!-- Robot1 (submarine) -->
-    <include file="$(find cola2_turbot)/launch/robot.launch">
+    <!-- AUV0 -->
+    <!-- <include file="$(find cola2_turbot)/launch/robot.launch">
         <arg name="place" value="$(arg place)"/>
-        <arg name="robot_name" value="$(arg robot1_name)"/>
+        <arg name="robot_name" value="$(arg robot0_name)"/>
         <arg name="sim" value="true"/>
         <arg name="simGPS" value="false"/>
         <arg name="enableComputerLogger" default="false"/>
@@ -80,19 +80,20 @@
         <arg name="enableMultimaster" value="$(arg enableMultimaster)"/>
         <arg name="enableEchosounder" value="false"/>
         <arg name="world2ned" value="true"/>
-    </include>
+    </include> -->
 
     <!-- Simulate internal sensors -->
-    <group ns="$(arg robot1_name)">
-        <!-- Internal Sensors -->
+    <!-- <group ns="$(arg robot0_name)">
+        <rosparam command="load" file="$(find cola2_turbot)/config/simulation/frames/frames_robot0.yaml"/>
+        <rosparam command="load" file="$(find cola2_turbot)/config/simulation/frames/robot_localization_robot0.yaml" ns="navigator"/>
         <rosparam command="load" file="$(find cola2_turbot)/config/sim_internal_sensors.yaml"/>
         <node name="sim_internal_sensors" pkg="cola2_sim" type="sim_internal_sensors.py" output="screen"/>
-    </group>
+    </group> -->
 
-    <!-- Robot2 (submarine) -->
-    <include file="$(find cola2_turbot)/launch/robot.launch">
+    <!-- AUV1 -->
+    <!-- <include file="$(find cola2_turbot)/launch/robot.launch">
         <arg name="place" value="$(arg place)"/>
-        <arg name="robot_name" value="$(arg robot2_name)"/>
+        <arg name="robot_name" value="$(arg robot1_name)"/>
         <arg name="sim" value="true"/>
         <arg name="simGPS" value="false"/>
         <arg name="enableComputerLogger" default="false"/>
@@ -108,22 +109,45 @@
         <arg name="enableMultimaster" value="$(arg enableMultimaster)"/>
         <arg name="enableEchosounder" value="false"/>
         <arg name="world2ned" value="false"/>
-    </include>
+    </include> -->
 
-    <group ns="$(arg robot2_name)">
-        <rosparam command="load" file="$(find cola2_turbot)/config/simulation/config/frames2.yaml"/>
-        <rosparam command="load" file="$(find cola2_turbot)/config/simulation/config/robot_localization2.yaml" ns="navigator"/>
-    </group>
-
-    <!-- Simulate internal sensors -->
-    <group ns="$(arg robot2_name)">
-        <!-- Internal Sensors -->
+    <!-- <group ns="$(arg robot1_name)">
+        <rosparam command="load" file="$(find cola2_turbot)/config/simulation/frames/frames_robot1.yaml"/>
+        <rosparam command="load" file="$(find cola2_turbot)/config/simulation/frames/robot_localization_robot1.yaml" ns="navigator"/>
         <rosparam command="load" file="$(find cola2_turbot)/config/sim_internal_sensors.yaml"/>
         <node name="sim_internal_sensors" pkg="cola2_sim" type="sim_internal_sensors.py" output="screen"/>
-    </group>
+    </group> -->
 
-    <!-- Robot3 (submarine) -->
-    <include file="$(find cola2_turbot)/launch/robot.launch">
+    <!-- AUV2 -->
+    <!-- <include file="$(find cola2_turbot)/launch/robot.launch">
+        <arg name="place" value="$(arg place)"/>
+        <arg name="robot_name" value="$(arg robot2_name)"/>
+        <arg name="sim" value="true"/>
+        <arg name="simGPS" value="false"/>
+        <arg name="enableComputerLogger" default="false"/>
+        <arg name="cola2_nav" value="$(arg cola2_nav)"/>
+        <arg name="enableSafety" value="true"/>
+        <arg name="enableThrusters" value="false"/>
+        <arg name="openLoopTeleoperation" value="false"/>
+        <arg name="enableUSBLloc" value="$(arg enableUSBLloc)"/>
+        <arg name="enableCamera" value="false"/>
+        <arg name="enableModem" value="false"/>
+        <arg name="enableRelayBoard" value="false"/>
+        <arg name="enableIqua" value="$(arg enableIquaT3)"/>
+        <arg name="enableMultimaster" value="$(arg enableMultimaster)"/>
+        <arg name="enableEchosounder" value="false"/>
+        <arg name="world2ned" value="false"/>
+    </include> -->
+
+    <!-- <group ns="$(arg robot2_name)">
+        <rosparam command="load" file="$(find cola2_turbot)/config/simulation/frames/frames_robot2.yaml"/>
+        <rosparam command="load" file="$(find cola2_turbot)/config/simulation/frames/robot_localization_robot2.yaml" ns="navigator"/>
+        <rosparam command="load" file="$(find cola2_turbot)/config/sim_internal_sensors.yaml"/>
+        <node name="sim_internal_sensors" pkg="cola2_sim" type="sim_internal_sensors.py" output="screen"/>
+    </group> -->
+
+    <!-- AUV3 -->
+    <!-- <include file="$(find cola2_turbot)/launch/robot.launch">
         <arg name="place" value="$(arg place)"/>
         <arg name="robot_name" value="$(arg robot3_name)"/>
         <arg name="sim" value="true"/>
@@ -141,19 +165,14 @@
         <arg name="enableMultimaster" value="$(arg enableMultimaster)"/>
         <arg name="enableEchosounder" value="false"/>
         <arg name="world2ned" value="false"/>
-    </include>
-
+    </include> -->
+<!-- 
     <group ns="$(arg robot3_name)">
-        <rosparam command="load" file="$(find cola2_turbot)/config/simulation/config/frames2.yaml"/>
-        <rosparam command="load" file="$(find cola2_turbot)/config/simulation/config/robot_localization2.yaml" ns="navigator"/>
-    </group>
-
-    <!-- Simulate internal sensors -->
-    <group ns="$(arg robot3_name)">
-        <!-- Internal Sensors -->
+        <rosparam command="load" file="$(find cola2_turbot)/config/simulation/frames/frames_robot3.yaml"/>
+        <rosparam command="load" file="$(find cola2_turbot)/config/simulation/frames/robot_localization_robot3.yaml" ns="navigator"/>
         <rosparam command="load" file="$(find cola2_turbot)/config/sim_internal_sensors.yaml"/>
         <node name="sim_internal_sensors" pkg="cola2_sim" type="sim_internal_sensors.py" output="screen"/>
-    </group>
+    </group> -->
 
     <!-- Sound speed test -->
     <node name="sound_speed_publisher" pkg="cola2_turbot" type="sound_speed_publisher.py" output="screen"/>
@@ -161,7 +180,7 @@
     <!-- Run Simulator -->
     <include file="$(find stonefish_ros)/launch/simulator.launch">
         <arg name="simulation_data" value="$(find stonefish_ros)/simulation"/>
-        <arg name="scenario_description" value="$(find stonefish_ros)/simulation/scenarios/illetes_multirobot.scn"/>
+        <arg name="scenario_description" value="$(find stonefish_ros)/simulation/scenarios/andratx_multirobot.scn"/>
         <arg name="simulation_rate" value="$(arg simulation_rate)"/>
         <arg name="graphics_resolution" value="1200 800"/>
         <arg name="graphics_quality" value="$(arg graphics_quality)"/>
