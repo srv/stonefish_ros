@@ -6,7 +6,7 @@
 		<ocean enabled = "false">
 			<water density="1031.0" jerlov="0.15"/>
 			<waves height="0.0"/>
-			<particles enabled="true"/>
+			<particles enabled="false"/>
 			<current type="uniform">
 				<velocity xyz="1.0 0.0 0.0"/>
 			</current>
@@ -58,16 +58,8 @@
 		<material name="Rock"/>
 		<look name="seabed"/>
 		<height_map filename="terrain/illetes_sq_bw.png"/>
-		<dimensions scalex="0.02" scaley="0.02" height="0"/>
-		<world_transform rpy="0.0 0.0 0.0" xyz="0.0 0.0 8.5"/>
-	</static>
-
-	<static name="Terrain" type="terrain"> 
-		<material name="Rock"/>
-		<look name="seabed3"/>
-		<height_map filename="terrain/illetes_sq_bw.png"/>
-		<dimensions scalex="0.02" scaley="0.02" height="0"/>
-		<world_transform rpy="0.0 0.0 0.0" xyz="49.0 -15.0 8.49"/>
+		<dimensions scalex="0.06" scaley="0.06" height="0"/>
+		<world_transform rpy="0.0 0.0 0.0" xyz="-57 -35 8.5"/>
 	</static>
 
 	<include file="$(find stonefish_ros)/simulation/scenarios/robot0.scn"/>
@@ -78,10 +70,6 @@
 
     <include file="$(find stonefish_ros)/simulation/scenarios/robot3.scn"/>
 
-	<!-- <include file="$(find stonefish_ros)/simulation/scenarios/robot4.scn"/>
-
-    <include file="$(find stonefish_ros)/simulation/scenarios/robot5.scn"/> -->
-
-	<include file="$(find stonefish_ros)/simulation/scenarios/robot6.scn"/>
+	<include file="$(find stonefish_ros)/simulation/scenarios/robot4.scn"/>
 
 </scenario>

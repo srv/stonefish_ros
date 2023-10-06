@@ -110,6 +110,15 @@
 			</internal_part>			
 		</base_link>
 
+		<!-- communication device -->
+		<!-- <comm name="Modem" device_id="3" type="acoustic_modem">
+			<specs min_vertical_fov="0.0" max_vertical_fov="220.0" range="1000.0"/>
+			<connect device_id="13" occlusion_test="false"/>
+			<origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+			<link name="Vehicle"/>
+			<ros_publisher topic="/robot3/sim/modem3"/>
+		</comm> -->
+
 		<sensor name="dynamics" type="odometry" rate="30.0">
 			<link name="Vehicle"/>
 			<origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
@@ -120,7 +129,7 @@
 			<link name="Vehicle"/>
 			<origin rpy="0.0 0.0 0.0" xyz="0.387 0.0 -0.033"/>
 			<noise pressure="100.0"/>
-			<ros_publisher topic="/robot3/adis_imu/fluid_pressure"/>
+			<ros_publisher topic="/robot3/adis_imu/depth_fast"/>
 		</sensor>
 
 		<sensor name="dvl" type="dvl" rate="5.0">
@@ -129,7 +138,7 @@
 			<specs beam_angle="30.0"/>
 			<range velocity="9.0 9.0 9.0" altitude_min="0.5" altitude_max="81.0"/>
 			<noise velocity="0.0015" altitude="0.001"/>
-			<ros_publisher topic="/robot3/teledyne_explorer_dvl/dvl" altitude_topic="/turbot/navigator/altitude_raw"/>
+			<ros_publisher topic="/robot3/teledyne_explorer_dvl/data" altitude_topic="/turbot/navigator/altitude_raw"/>
 		</sensor>
 
 		<sensor name="imu_filter" type="imu" rate="20.0">
