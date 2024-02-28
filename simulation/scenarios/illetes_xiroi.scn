@@ -64,7 +64,7 @@
 		<material name="Rock"/>
 		<look name="seabed2"/>
 		<dimensions scalex="1" scaley="1"/>
-		<world_transform rpy="0.0 0.0 0.0" xyz="0.0 0.0 3.6"/>
+		<world_transform rpy="0.0 0.0 0.0" xyz="0.0 0.0 4.6"/>
 	</static>
 
 	<static name="Terrain" type="terrain"> 
@@ -75,7 +75,57 @@
 		<world_transform rpy="0.0 0.0 0.0" xyz="0.0 0.0 4.5"/>
 	</static>
 
-    <robot name="xiroi" fixed="false" self_collisions="false">
+
+	<static name="urchin_1" type="model">
+		<physical>
+			<mesh filename="models/sea_urchin_model_vicent.obj" scale="0.1" convex="true"/>
+			<!-- <mesh filename="models/sea_urchin_model_antonio.obj" scale="1".0 convex="true"/> -->
+			<origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+		</physical>
+		<visual>
+			<mesh filename="models/sea_urchin_model_vicent.obj" scale="0.1" convex="true"/>
+			<!-- <mesh filename="models/sea_urchin_model_antonio.obj" scale="1".0 convex="true"/> -->
+			<origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+		</visual>
+		<material name="Rock"/>
+		<look name="Brown"/>
+		<world_transform xyz="-2.0 0.0 4.45" rpy="0.0 0.0 0.0"/>
+	</static>
+
+	<static name="urchin_2" type="model">
+		<physical>
+			<mesh filename="models/sea_urchin_model_vicent.obj" scale="0.1" convex="true"/>
+			<!-- <mesh filename="models/sea_urchin_model_antonio.obj" scale="1".0 convex="true"/> -->
+			<origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+		</physical>
+		<visual>
+			<mesh filename="models/sea_urchin_model_vicent.obj" scale="0.1" convex="true"/>
+			<!-- <mesh filename="models/sea_urchin_model_antonio.obj" scale="1".0 convex="true"/> -->
+			<origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+		</visual>
+		<material name="Rock"/>
+		<look name="Brown"/>
+		<world_transform xyz="-2.0 1.0 4.45" rpy="0.0 0.0 0.0"/>
+	</static>
+
+	<static name="urchin_3" type="model">
+		<physical>
+			<mesh filename="models/sea_urchin_model_vicent.obj" scale="0.1" convex="true"/>
+			<!-- <mesh filename="models/sea_urchin_model_antonio.obj" scale="1".0 convex="true"/> -->
+			<origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+		</physical>
+		<visual>
+			<mesh filename="models/sea_urchin_model_vicent.obj" scale="0.1" convex="true"/>
+			<!-- <mesh filename="models/sea_urchin_model_antonio.obj" scale="1".0 convex="true"/> -->
+			<origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+		</visual>
+		<material name="Rock"/>
+		<look name="Brown"/>
+		<world_transform xyz="-2.0 2.0 4.45" rpy="0.0 0.0 0.0"/>
+	</static>
+
+
+    <robot name="robot3" fixed="false" self_collisions="false">
         <base_link name="Vehicle" type="compound" physics="submerged">
             <external_part name="Hull" type="model" physics="submerged" buoyant="false">
                 <physical>
@@ -177,21 +227,21 @@
         <sensor name="odom" type="odometry" rate="30.0">
             <link name="Vehicle"/>
             <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
-            <ros_publisher topic="/xiroi/dynamics/odometry"/>
+            <ros_publisher topic="/robot3/dynamics/odometry"/>
         </sensor>
 
         <sensor name="base_link" type="imu" rate="10.0">
             <link name="Vehicle"/>
             <origin rpy="0.0 0.0 0.0" xyz="0.36377 -0.02093 -0.0849"/>
             <noise angle="0.000001745" angular_velocity="0.00001745"/>
-            <ros_publisher topic="/xiroi/sensors/imu_raw"/>
+            <ros_publisher topic="/robot3/sensors/imu_raw"/>
         </sensor>
 
         <!-- <sensor name="gps" type="gps" rate="10.0">
             <link name="Vehicle"/>
             <origin rpy="0.0 0.0 0.0" xyz="-0.39 0.0 -0.36"/>
             <noise ned_position="0.25"/>
-            <ros_publisher topic="/xiroi/sensors/gps_raw"/>
+            <ros_publisher topic="/robot3/sensors/gps_raw"/>
         </sensor> -->
 
         <!-- Thrusters definition -->    
@@ -219,6 +269,6 @@
 
         <world_transform rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
 
-        <ros_subscriber thrusters="/xiroi/controller/thruster_setpoints"/> 
+        <ros_subscriber thrusters="/robot3/controller/thruster_setpoints"/> 
     </robot>
 </scenario>
