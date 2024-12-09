@@ -42,6 +42,7 @@
 #include <Stonefish/sensors/vision/SSS.h>
 #include <Stonefish/sensors/vision/MSIS.h>
 #include <Stonefish/comms/Comm.h>
+#include <std_msgs/Bool.h>
 #include <std_msgs/Float64.h>
 #include <std_msgs/Float64MultiArray.h>
 #include <geometry_msgs/Transform.h>
@@ -67,8 +68,6 @@
 #include <stonefish_ros/ThrusterState.h>
 #include <stonefish_ros/Int32Stamped.h>
 #include <stonefish_ros/BeaconInfo.h>
-#include <cola2_msgs/Setpoints.h>
-#include <cola2_msgs/DVL.h>
 
 #include <ros/package.h>
 
@@ -113,7 +112,8 @@ std::string ROSScenarioParser::SubstituteROSVars(const std::string& value)
         }
         else if (results[0] == "param")
         {
-            std::string param;
+            XmlRpc::XmlRpcValue param;
+            std::string paramStr;
             // to get private params, we need to prefix ~ it seems
             if (!results[1].empty() && results[1][0] != '~' && results[1][0] != '/')
             {
@@ -125,7 +125,26 @@ std::string ROSScenarioParser::SubstituteROSVars(const std::string& value)
                 ROS_ERROR("Scenario parser: Could not find parameter '%s'!", results[1].c_str());
                 return value;
             }
-            replacedValue += param;
+            switch(param.getType())
+            {
+                case XmlRpc::XmlRpcValue::TypeDouble:
+                    paramStr = std::to_string(static_cast<double>(param));
+                    break;
+
+                case XmlRpc::XmlRpcValue::TypeInt:
+                    paramStr = std::to_string(static_cast<int>(param));
+                    break;
+
+                case XmlRpc::XmlRpcValue::TypeString:
+                    paramStr = static_cast<std::string>(param);
+                    break;
+
+                default:
+                    log.Print(MessageType::ERROR, "[ROS] Found parameter '%s' of unsupported type!", results[1].c_str());
+                    ROS_ERROR("Scenario parser: Found parameter '%s' of unsupported type!", results[1].c_str());
+                    return value;
+            }
+            replacedValue += paramStr;
         }
         else //Command unsupported
         {
@@ -248,6 +267,7 @@ bool ROSScenarioParser::ParseRobot(XMLElement* element)
         switch(act->getType())
         {
             case ActuatorType::THRUSTER:
+            case ActuatorType::PUSH:
                 ++nThrusters;
                 break;
 
@@ -287,13 +307,13 @@ bool ROSScenarioParser::ParseRobot(XMLElement* element)
         const char* topicSrv = nullptr;
 
         if(nThrusters > 0 && item->QueryStringAttribute("thrusters", &topicThrust) == XML_SUCCESS)
-            subs[robot->getName() + "/thrusters"] = nh.subscribe<cola2_msgs::Setpoints>(std::string(topicThrust), 10, ThrustersCallback(sim, rosRobot));
+            subs[robot->getName() + "/thrusters"] = nh.subscribe<std_msgs::Float64MultiArray>(std::string(topicThrust), 10, ThrustersCallback(sim, rosRobot));
 
         if(nPropellers > 0 && item->QueryStringAttribute("propellers", &topicProp) == XML_SUCCESS)
-            subs[robot->getName() + "/propellers"] = nh.subscribe<cola2_msgs::Setpoints>(std::string(topicProp), 10, PropellersCallback(sim, rosRobot));
+            subs[robot->getName() + "/propellers"] = nh.subscribe<std_msgs::Float64MultiArray>(std::string(topicProp), 10, PropellersCallback(sim, rosRobot));
 
         if(nRudders > 0 && item->QueryStringAttribute("rudders", &topicRudder) == XML_SUCCESS)
-            subs[robot->getName() + "/rudders"] = nh.subscribe<cola2_msgs::Setpoints>(std::string(topicRudder), 10, RuddersCallback(sim, rosRobot));
+            subs[robot->getName() + "/rudders"] = nh.subscribe<std_msgs::Float64MultiArray>(std::string(topicRudder), 10, RuddersCallback(sim, rosRobot));
 
         if(nServos > 0 && item->QueryStringAttribute("servos", &topicSrv) == XML_SUCCESS)
         {
@@ -481,6 +501,7 @@ Actuator* ROSScenarioParser::ParseActuator(XMLElement* element, const std::strin
         ros::NodeHandle& nh = sim->getNodeHandle();
         std::map<std::string, ros::Publisher>& pubs = sim->getPublishers();
         std::map<std::string, ros::Subscriber>& subs = sim->getSubscribers();
+        std::map<std::string, ros::ServiceServer>& srvs = sim->getServiceServers();
         std::string actuatorName = act->getName();
         XMLElement* item;
         //Actuator specific handling
@@ -499,6 +520,24 @@ Actuator* ROSScenarioParser::ParseActuator(XMLElement* element, const std::strin
                     && item->QueryStringAttribute("topic", &subTopic) == XML_SUCCESS)
                 {
                     subs[actuatorName] = nh.subscribe<std_msgs::Float64>(std::string(subTopic), 1, VBSCallback((VariableBuoyancy*)act));
+                }
+            }
+                break;
+
+            case ActuatorType::SUCTION_CUP:
+            {
+                const char* pubTopic = nullptr;
+                const char* srvTopic = nullptr;
+                if((item = element->FirstChildElement("ros_publisher")) != nullptr
+                    && item->QueryStringAttribute("topic", &pubTopic) == XML_SUCCESS)
+                {
+                    pubs[actuatorName] = nh.advertise<std_msgs::Bool>(std::string(pubTopic), 10);
+                }
+                if((item = element->FirstChildElement("ros_service")) != nullptr
+                    && item->QueryStringAttribute("topic", &srvTopic) == XML_SUCCESS)
+                {
+                    SuctionCup* suction = (SuctionCup*)act;
+                    srvs[actuatorName] = nh.advertiseService<std_srvs::SetBool::Request, std_srvs::SetBool::Response>(std::string(srvTopic), SuctionCupService(suction));
                 }
             }
                 break;
@@ -598,7 +637,7 @@ Sensor* ROSScenarioParser::ParseSensor(XMLElement* element, const std::string& n
 
                     case ScalarSensorType::DVL:
                     {
-                        pubs[sensorName] = nh.advertise<cola2_msgs::DVL>(topicStr, queueSize);
+                        pubs[sensorName] = nh.advertise<stonefish_ros::DVL>(topicStr, queueSize);
 
                         //Second topic with altitude
                         const char* altTopic = nullptr;
@@ -618,19 +657,19 @@ Sensor* ROSScenarioParser::ParseSensor(XMLElement* element, const std::string& n
                         pubs[sensorName] = nh.advertise<sensor_msgs::FluidPressure>(topicStr, queueSize);
                         break;
 
-                    // case ScalarSensorType::INS:
-                    // {
-                    //     pubs[sensorName] = nh.advertise<stonefish_ros::INS>(topicStr, queueSize);
+                    case ScalarSensorType::INS:
+                    {
+                        pubs[sensorName] = nh.advertise<stonefish_ros::INS>(topicStr, queueSize);
 
-                    //     //Second topic with odometry
-                    //     const char* odomTopic = nullptr;
-                    //     if(item->QueryStringAttribute("odometry_topic", &odomTopic) == XML_SUCCESS)
-                    //     {
-                    //         std::string odomTopicStr = std::string(odomTopic);
-                    //         pubs[sensorName + "/odometry"] = nh.advertise<nav_msgs::Odometry>(odomTopicStr, queueSize);
-                    //     }
-                    // }
-                    //     break;
+                        //Second topic with odometry
+                        const char* odomTopic = nullptr;
+                        if(item->QueryStringAttribute("odometry_topic", &odomTopic) == XML_SUCCESS)
+                        {
+                            std::string odomTopicStr = std::string(odomTopic);
+                            pubs[sensorName + "/odometry"] = nh.advertise<nav_msgs::Odometry>(odomTopicStr, queueSize);
+                        }
+                    }
+                        break;
 
                     case ScalarSensorType::ODOM:
                         pubs[sensorName] = nh.advertise<nav_msgs::Odometry>(topicStr, queueSize);

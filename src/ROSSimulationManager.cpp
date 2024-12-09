@@ -52,9 +52,11 @@
 #include <Stonefish/sensors/vision/MSIS.h>
 #include <Stonefish/sensors/Contact.h>
 #include <Stonefish/comms/USBL.h>
+#include <Stonefish/actuators/Push.h>
 #include <Stonefish/actuators/Thruster.h>
 #include <Stonefish/actuators/Propeller.h>
 #include <Stonefish/actuators/Rudder.h>
+#include <Stonefish/actuators/SuctionCup.h>
 #include <Stonefish/actuators/Servo.h>
 #include <Stonefish/utils/SystemUtil.hpp>
 
@@ -405,6 +407,10 @@ void ROSSimulationManager::SimulationStepCompleted(Scalar timeStep)
         {
             switch(actuator->getType())
             {
+                case ActuatorType::PUSH:
+                    ((Push*)actuator)->setForce(rosRobots[i]->thrusterSetpoints[thID++]);
+                    break;
+
                 case ActuatorType::THRUSTER:
                     ((Thruster*)actuator)->setSetpoint(rosRobots[i]->thrusterSetpoints[thID++]);
                     break;
@@ -446,6 +452,18 @@ void ROSSimulationManager::SimulationStepCompleted(Scalar timeStep)
                     {
                         std_msgs::Float64 msg;
                         msg.data = ((VariableBuoyancy*)actuator)->getLiquidVolume();
+                        it->second.publish(msg);
+                    }
+                }
+                    break;
+
+                case ActuatorType::SUCTION_CUP:
+                {
+                    auto it = pubs.find(actuator->getName());
+                    if(it != pubs.end())
+                    {
+                        std_msgs::Bool msg;
+                        msg.data = ((SuctionCup*)actuator)->getPump();
                         it->second.publish(msg);
                     }
                 }
@@ -618,48 +636,48 @@ ThrustersCallback::ThrustersCallback(ROSSimulationManager* sm, ROSRobot* robot) 
 {
 }
 
-void ThrustersCallback::operator()(const cola2_msgs::SetpointsConstPtr& msg)
+void ThrustersCallback::operator()(const std_msgs::Float64MultiArrayConstPtr& msg)
 {
-    if(msg->setpoints.size() != robot->thrusterSetpoints.size())
+    if(msg->data.size() != robot->thrusterSetpoints.size())
     {
         ROS_ERROR_STREAM("Wrong number of thruster setpoints for robot: " << robot->robot->getName());
         return;
     }
 
     for(size_t i=0; i<robot->thrusterSetpoints.size(); ++i)
-        robot->thrusterSetpoints[i] = msg->setpoints[i];
+        robot->thrusterSetpoints[i] = msg->data[i];
 }
 
 PropellersCallback::PropellersCallback(ROSSimulationManager* sm, ROSRobot* robot) : sm(sm), robot(robot)
 {
 }
 
-void PropellersCallback::operator()(const cola2_msgs::SetpointsConstPtr& msg)
+void PropellersCallback::operator()(const std_msgs::Float64MultiArrayConstPtr& msg)
 {
-    if(msg->setpoints.size() != robot->propellerSetpoints.size())
+    if(msg->data.size() != robot->propellerSetpoints.size())
     {
         ROS_ERROR_STREAM("Wrong number of propeller setpoints for robot: " << robot->robot->getName());
         return;
     }
 
     for(size_t i=0; i<robot->propellerSetpoints.size(); ++i)
-        robot->propellerSetpoints[i] = msg->setpoints[i];
+        robot->propellerSetpoints[i] = msg->data[i];
 }
 
 RuddersCallback::RuddersCallback(ROSSimulationManager* sm, ROSRobot* robot) : sm(sm), robot(robot)
 {
 }
 
-void RuddersCallback::operator()(const cola2_msgs::SetpointsConstPtr& msg)
+void RuddersCallback::operator()(const std_msgs::Float64MultiArrayConstPtr& msg)
 {
-    if(msg->setpoints.size() != robot->rudderSetpoints.size())
+    if(msg->data.size() != robot->rudderSetpoints.size())
     {
         ROS_ERROR_STREAM("Wrong number of rudder setpoints for robot: " << robot->robot->getName());
         return;
     }
 
     for(size_t i=0; i<robot->rudderSetpoints.size(); ++i)
-        robot->rudderSetpoints[i] = msg->setpoints[i];
+        robot->rudderSetpoints[i] = msg->data[i];
 }
 
 ServosCallback::ServosCallback(ROSSimulationManager* sm, ROSRobot* robot) : sm(sm), robot(robot)
@@ -777,6 +795,7 @@ void ActuatorOriginCallback::operator()(const geometry_msgs::TransformConstPtr& 
 
     switch(act->getType())
     {
+        case ActuatorType::PUSH:
         case ActuatorType::THRUSTER:
         case ActuatorType::PROPELLER:
         case ActuatorType::VBS:
@@ -902,5 +921,21 @@ bool MSISService::operator()(stonefish_ros::SonarSettings2::Request& req, stonef
     }
     return true;
 }
+
+SuctionCupService::SuctionCupService(SuctionCup* suction) : suction(suction)
+{
+}
+
+bool SuctionCupService::operator()(std_srvs::SetBool::Request& req, std_srvs::SetBool::Response& res)
+{
+    suction->setPump(req.data);
+    if(req.data)
+        res.message = "Pump turned on.";
+    else 
+        res.message = "Pump turned off.";
+    res.success = true;
+    return true;
+}
+
 
 }
